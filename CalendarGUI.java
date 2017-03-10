@@ -1,106 +1,183 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 public class CalendarGUI extends JFrame {
 
 
-    JTextField addField;
-    JButton addBtn;
-    JList<String> calData;
-    DefaultListModel<String> listModel;
-
-    JPanel timePanel;
-    JTextField hourField;
-    JTextField minuteField;
+    JTextField addField = new JTextField();
+    JButton submitTaskBtn = new JButton("add task");
 
 
-    JPanel dayPanel;
-    JCheckBox monday;
-    JCheckBox tuesday;
-    JCheckBox wednesday;
-    JCheckBox thursday;
-    JCheckBox friday;
-    JCheckBox saturday;
-    JCheckBox sunday;
+    DefaultListModel<String> listModel  = new DefaultListModel<>();
+    JList<String> calData = new JList<>(listModel);
 
 
+    DefaultListModel<String> taskListModel  = new DefaultListModel<>();
+    JList<String> taskList = new JList<>(taskListModel);
 
+
+    DefaultListModel<String> eventListModel  = new DefaultListModel<>();
+    JList<String> eventList = new JList<>(eventListModel);
+
+
+    JPanel taskTimePanel = new JPanel();
+    JTextField taskHourField = new JTextField();
+    JTextField taskMinuteField = new JTextField();
+
+    JPanel taskAddPanel = new JPanel();
+
+    JPanel taskPanel = new JPanel();
+    JPanel eventPanel = new JPanel();
+
+    JPanel eventSelectPanel = new JPanel();
+    JPanel dayPanel = new JPanel();
+    JCheckBox sunday = new JCheckBox("Sun");
+    JCheckBox monday = new JCheckBox("Mon");
+    JCheckBox tuesday = new JCheckBox("Tue");
+    JCheckBox wednesday = new JCheckBox("Wed");
+    JCheckBox thursday = new JCheckBox("Thu");
+    JCheckBox friday = new JCheckBox("Fri");
+    JCheckBox saturday = new JCheckBox("Sat");
+
+    JPanel eventTimePanel = new JPanel();
+    JPanel eventDayPanel = new JPanel();
+    JPanel eventYearPanel = new JPanel();
+    JTextField eventHourField = new JTextField();
+    JTextField eventMinuteField = new JTextField();
+    JTextField eventDayField = new JTextField();
+    JTextField eventMonthField = new JTextField();
+    JTextField eventYearField = new JTextField();
+    JButton eventSubmitBtn = new JButton("Submit event");
+
+    ActionListener taskSubmit = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String hour = taskHourField.getText();
+            String min = taskMinuteField.getText();
+            String days = genDayString();
+            String label = addField.getText();
+            System.out.println("Duck");
+
+            taskListModel.addElement(days + ":" + hour + ":" + min + ":" + label);
+
+        }
+    };
+
+    ActionListener eventSubmit = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String hour = eventHourField.getText();
+            String min = eventMinuteField.getText();
+            String day = eventDayField.getText();
+            String month = eventMonthField.getText();
+            String year = eventYearField.getText();
+            eventListModel.addElement(hour + ":" + min + " " + month + "/" + day + "/" + year);
+
+            System.out.println(min + hour + day + month + year);
+        }
+    };
 
     public CalendarGUI() {
         super("Calendar");
+        setPreferredSize(new Dimension(1300, 500));
+        setLayout(new GridLayout(1,3));
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
+
+        /*
+            Task Panel:
+         */
+
+
+        /*
+            Row 1:  Setting up the time panel
+         */
+
+        taskTimePanel.setLayout(new GridLayout(1, 4));
+        taskTimePanel.add(new JLabel("Hour"));
+        taskTimePanel.add(taskHourField);
+        taskTimePanel.add(new JLabel("Min"));
+        taskTimePanel.add(taskMinuteField);
 
 
 
         /*
-            Settin up the day panel
+            Row 2: Setting up the day panel
          */
-        dayPanel = new JPanel();
         dayPanel.setLayout(new GridLayout(1, 7));
 
-        monday = new JCheckBox("Mon");
-        tuesday = new JCheckBox("Tue");
-        wednesday = new JCheckBox("Wed");
-        thursday = new JCheckBox("Thu");
-        friday = new JCheckBox("Fri");
-        saturday = new JCheckBox("Sat");
-        sunday = new JCheckBox("Sun");
-
+        dayPanel.add(sunday);
         dayPanel.add(monday);
         dayPanel.add(tuesday);
         dayPanel.add(wednesday);
+        dayPanel.add(thursday);
         dayPanel.add(friday);
         dayPanel.add(saturday);
-        dayPanel.add(sunday);
 
 
 
         /*
-            Setting up the time panel
+            Creating the left task field
          */
 
-        timePanel = new JPanel();
-        timePanel.setLayout(new GridLayout(1, 4));
+        submitTaskBtn.addActionListener(taskSubmit);
 
-        minuteField = new JTextField();
-        hourField = new JTextField();
 
-        timePanel.add(new JLabel("Hour"));
-        timePanel.add(hourField);
-        timePanel.add(new JLabel("Min"));
-        timePanel.add(minuteField);
+        taskAddPanel.setLayout(new GridLayout(4,1));
+        taskAddPanel.add(taskTimePanel);
+        taskAddPanel.add(dayPanel);
+        taskAddPanel.add(addField);
+        taskAddPanel.add(submitTaskBtn);
 
+        taskPanel = new JPanel();
+        taskPanel.setLayout(new BorderLayout(5,5));
+        taskPanel.add(taskAddPanel, BorderLayout.PAGE_START);
+        taskPanel.add(new JScrollPane(taskList), BorderLayout.CENTER);
 
         /*
-            Creating the entire top field
+            Event panel
          */
-        addField = new JTextField();
-        calData = new JList<>();
-        addBtn = new JButton("add task");
-        addBtn.addActionListener(e -> listModel.addElement(
-                hourField.getText() + ":" +
-                        minuteField.getText()+ ":" +
-                        genDayString() + " : " +
-                        addField.getText()));
-        JPanel addBar = new JPanel();
 
+        // Row 1
+        eventTimePanel.setLayout(new GridLayout(1, 4));
+        eventTimePanel.add(new JLabel("Hour:"));
+        eventTimePanel.add(eventHourField);
+        eventTimePanel.add(new JLabel("Min:"));
+        eventTimePanel.add(eventMinuteField);
 
-        listModel = new DefaultListModel<>();
-        calData = new JList<>(listModel);
+        // Row 2
+        eventDayPanel.setLayout(new GridLayout(1, 4));
+        eventDayPanel.add(new JLabel("Month:"));
+        eventDayPanel.add(eventMonthField);
+        eventDayPanel.add(new JLabel("Day:"));
+        eventDayPanel.add(eventDayField);
 
-        addBar.setLayout(new GridLayout(2,2));
-        addBar.add(timePanel);
-        addBar.add(dayPanel);
-        addBar.add(addField);
-        addBar.add(addBtn);
+        // Row 3
+        eventYearPanel.setLayout(new GridLayout(1, 4));
+        eventYearPanel.add(new JLabel("Year:"));
+        eventYearPanel.add(eventYearField);
+        eventYearPanel.add(new JLabel(" "));
+        eventYearPanel.add(new JLabel("  "));
 
-        setPreferredSize(new Dimension(700, 500));
-        setLayout(new BorderLayout(5,5)); // new GridLayout(1, 2));
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // JFrame.EXIT_ON_CLOSE);
+        // Row 4
+        eventSubmitBtn.addActionListener(eventSubmit);
 
-        add(addBar, BorderLayout.PAGE_START);
-        add(new JScrollPane(calData), BorderLayout.CENTER);
+        eventSelectPanel.setLayout(new GridLayout(4,1));
+        eventSelectPanel.add(eventTimePanel);
+        eventSelectPanel.add(eventDayPanel);
+        eventSelectPanel.add(eventYearPanel);
+        eventSelectPanel.add(eventSubmitBtn);
+
+        eventPanel.setLayout(new BorderLayout(5,5));
+        eventPanel.add(eventSelectPanel, BorderLayout.PAGE_START); // eventTimePanel, BorderLayout.PAGE_START );
+        eventPanel.add(new JScrollPane(eventList), BorderLayout.CENTER);
+
+        add(taskPanel);
+        add(new JScrollPane(calData));
+        add(eventPanel);
 
         pack();
         setVisible(true);
@@ -108,7 +185,6 @@ public class CalendarGUI extends JFrame {
 
     private String genDayString() {
         String result = "";
-
         if (monday.isSelected()) {result += "m";}
         if (tuesday.isSelected()) {result += "t";}
         if (wednesday.isSelected()) {result += "w";}
@@ -122,7 +198,5 @@ public class CalendarGUI extends JFrame {
 
     public static void main(String[] args) {
         new CalendarGUI();
-
     }
-
 }
