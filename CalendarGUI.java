@@ -29,7 +29,8 @@ public class CalendarGUI extends JFrame {
     JCheckBox saturday = new JCheckBox("Sat");
 
     JTextField taskDescField = new JTextField();
-    JButton submitTaskBtn = new JButton("add task");
+    JButton taskDeleteBtn = new JButton("remove task");
+    JButton taskSubmitBtn = new JButton("add task");
 
     DefaultListModel<String> taskListModel  = new DefaultListModel<>();
     JList<String> taskList = new JList<>(taskListModel);
@@ -55,6 +56,18 @@ public class CalendarGUI extends JFrame {
     JTextField eventMonthField = new JTextField();
     JTextField eventYearField = new JTextField();
     JButton eventSubmitBtn = new JButton("Submit event");
+    JButton eventDeleteBtn = new JButton("Delete event");
+
+    ActionListener taskDelete = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            int deleteIndex = taskList.getSelectedIndex();
+            taskListModel.removeElementAt(deleteIndex);
+
+        }
+    };
+
 
     ActionListener taskSubmit = new ActionListener() {
         @Override
@@ -81,6 +94,16 @@ public class CalendarGUI extends JFrame {
             eventListModel.addElement(hour + ":" + min + " " + month + "/" + day + "/" + year);
 
             System.out.println(min + hour + day + month + year);
+        }
+    };
+
+    ActionListener eventDelete = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            int deleteIndex = eventList.getSelectedIndex();
+            eventListModel.removeElementAt(deleteIndex);
+
         }
     };
 
@@ -112,22 +135,23 @@ public class CalendarGUI extends JFrame {
         dayPanel.add(friday);
         dayPanel.add(saturday);
 
-
-
-
-        submitTaskBtn.addActionListener(taskSubmit);
+        taskSubmitBtn.addActionListener(taskSubmit);
 
 
         taskAddPanel.setLayout(new GridLayout(4,1));
         taskAddPanel.add(taskTimePanel);
         taskAddPanel.add(dayPanel);
         taskAddPanel.add(taskDescField);
-        taskAddPanel.add(submitTaskBtn);
+        taskAddPanel.add(taskSubmitBtn);
 
         taskPanel = new JPanel();
         taskPanel.setLayout(new BorderLayout(5,5));
         taskPanel.add(taskAddPanel, BorderLayout.PAGE_START);
         taskPanel.add(new JScrollPane(taskList), BorderLayout.CENTER);
+        taskPanel.add(taskDeleteBtn, BorderLayout.PAGE_END);
+
+
+        taskDeleteBtn.addActionListener(taskDelete);
 
         /*
             Event panel
@@ -156,6 +180,7 @@ public class CalendarGUI extends JFrame {
 
         // Row 4
         eventSubmitBtn.addActionListener(eventSubmit);
+        eventDeleteBtn.addActionListener(eventDelete);
 
         eventSelectPanel.setLayout(new GridLayout(4,1));
         eventSelectPanel.add(eventTimePanel);
@@ -166,6 +191,7 @@ public class CalendarGUI extends JFrame {
         eventPanel.setLayout(new BorderLayout(5,5));
         eventPanel.add(eventSelectPanel, BorderLayout.PAGE_START);
         eventPanel.add(new JScrollPane(eventList), BorderLayout.CENTER);
+        eventPanel.add(eventDeleteBtn, BorderLayout.PAGE_END);
 
         add(taskPanel);
         add(new JScrollPane(calData));
