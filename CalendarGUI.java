@@ -33,8 +33,6 @@ public class CalendarGUI extends JFrame {
     JCheckBox friday = new JCheckBox("Fri");
     JCheckBox saturday = new JCheckBox("Sat");
 
-
-
     JPanel eventTimePanel = new JPanel();
     JPanel eventDayPanel = new JPanel();
     JPanel eventYearPanel = new JPanel();
@@ -43,6 +41,7 @@ public class CalendarGUI extends JFrame {
     JTextField eventDayField = new JTextField();
     JTextField eventMonthField = new JTextField();
     JTextField eventYearField = new JTextField();
+    JButton eventSubmitBtn = new JButton("Submit event");
 
     ActionListener foo = new ActionListener() {
         @Override
@@ -136,12 +135,13 @@ public class CalendarGUI extends JFrame {
 
 
 
-        eventSelectPanel.setLayout(new GridLayout(3,1));
+        eventSelectPanel.setLayout(new GridLayout(4,1));
         eventSelectPanel.add(eventTimePanel);
         eventSelectPanel.add(eventDayPanel);
         eventSelectPanel.add(eventYearPanel);
+        eventSelectPanel.add(eventSubmitBtn);
 
-//         eventPanel = new JPanel();
+
         eventPanel.setLayout(new BorderLayout(5,5));
         eventPanel.add(eventSelectPanel, BorderLayout.PAGE_START); // eventTimePanel, BorderLayout.PAGE_START );
 
