@@ -8,17 +8,26 @@ public class CalendarGUI extends JFrame {
 
 
     JTextField addField = new JTextField();
-    JButton addBtn = new JButton("add task");
-    JList<String> calData;
+    JButton submitTaskBtn = new JButton("add task");
+
+
     DefaultListModel<String> listModel  = new DefaultListModel<>();
+    JList<String> calData = new JList<>(listModel);
+
+
+    DefaultListModel<String> taskListModel  = new DefaultListModel<>();
+    JList<String> taskList = new JList<>(taskListModel);
+
+
+    DefaultListModel<String> eventListModel  = new DefaultListModel<>();
+    JList<String> eventList = new JList<>(eventListModel);
+
 
     JPanel taskTimePanel = new JPanel();
     JTextField taskHourField = new JTextField();
     JTextField taskMinuteField = new JTextField();
 
-
-
-    JPanel addBar = new JPanel();
+    JPanel taskAddPanel = new JPanel();
 
     JPanel taskPanel = new JPanel();
     JPanel eventPanel = new JPanel();
@@ -43,7 +52,7 @@ public class CalendarGUI extends JFrame {
     JTextField eventYearField = new JTextField();
     JButton eventSubmitBtn = new JButton("Submit event");
 
-    ActionListener foo = new ActionListener() {
+    ActionListener taskSubmit = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             String hour = taskHourField.getText();
@@ -52,8 +61,22 @@ public class CalendarGUI extends JFrame {
             String label = addField.getText();
             System.out.println("Duck");
 
-            listModel.addElement(days + ":" + hour + ":" + min + ":" + label);
+            taskListModel.addElement(days + ":" + hour + ":" + min + ":" + label);
 
+        }
+    };
+
+    ActionListener eventSubmit = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String hour = eventHourField.getText();
+            String min = eventMinuteField.getText();
+            String day = eventDayField.getText();
+            String month = eventMonthField.getText();
+            String year = eventYearField.getText();
+            eventListModel.addElement(hour + ":" + min + " " + month + "/" + day + "/" + year);
+
+            System.out.println(min + hour + day + month + year);
         }
     };
 
@@ -65,7 +88,24 @@ public class CalendarGUI extends JFrame {
 
 
         /*
-            Setting up the day panel
+            Task Panel:
+         */
+
+
+        /*
+            Row 1:  Setting up the time panel
+         */
+
+        taskTimePanel.setLayout(new GridLayout(1, 4));
+        taskTimePanel.add(new JLabel("Hour"));
+        taskTimePanel.add(taskHourField);
+        taskTimePanel.add(new JLabel("Min"));
+        taskTimePanel.add(taskMinuteField);
+
+
+
+        /*
+            Row 2: Setting up the day panel
          */
         dayPanel.setLayout(new GridLayout(1, 7));
 
@@ -77,63 +117,53 @@ public class CalendarGUI extends JFrame {
         dayPanel.add(friday);
         dayPanel.add(saturday);
 
-        /*
-            Setting up the time panel
-         */
-
-        taskTimePanel.setLayout(new GridLayout(1, 4));
-
-        taskTimePanel.add(new JLabel("Hour"));
-        taskTimePanel.add(taskHourField);
-        taskTimePanel.add(new JLabel("Min"));
-        taskTimePanel.add(taskMinuteField);
 
 
         /*
             Creating the left task field
          */
 
-        addBtn.addActionListener(foo);
-        calData = new JList<>(listModel);
+        submitTaskBtn.addActionListener(taskSubmit);
 
-        addBar.setLayout(new GridLayout(4,1));
-        addBar.add(taskTimePanel);
-        addBar.add(dayPanel);
-        addBar.add(addField);
-        addBar.add(addBtn);
+
+        taskAddPanel.setLayout(new GridLayout(4,1));
+        taskAddPanel.add(taskTimePanel);
+        taskAddPanel.add(dayPanel);
+        taskAddPanel.add(addField);
+        taskAddPanel.add(submitTaskBtn);
 
         taskPanel = new JPanel();
         taskPanel.setLayout(new BorderLayout(5,5));
-        taskPanel.add(addBar, BorderLayout.PAGE_START);
+        taskPanel.add(taskAddPanel, BorderLayout.PAGE_START);
+        taskPanel.add(new JScrollPane(taskList), BorderLayout.CENTER);
 
         /*
             Event panel
          */
 
-        // eventTimePanel.setLayout(new GridLayout(3,4));
-
+        // Row 1
         eventTimePanel.setLayout(new GridLayout(1, 4));
         eventTimePanel.add(new JLabel("Hour:"));
         eventTimePanel.add(eventHourField);
         eventTimePanel.add(new JLabel("Min:"));
         eventTimePanel.add(eventMinuteField);
 
+        // Row 2
         eventDayPanel.setLayout(new GridLayout(1, 4));
         eventDayPanel.add(new JLabel("Month:"));
         eventDayPanel.add(eventMonthField);
         eventDayPanel.add(new JLabel("Day:"));
         eventDayPanel.add(eventDayField);
 
+        // Row 3
         eventYearPanel.setLayout(new GridLayout(1, 4));
         eventYearPanel.add(new JLabel("Year:"));
         eventYearPanel.add(eventYearField);
         eventYearPanel.add(new JLabel(" "));
         eventYearPanel.add(new JLabel("  "));
 
-
-
-
-
+        // Row 4
+        eventSubmitBtn.addActionListener(eventSubmit);
 
         eventSelectPanel.setLayout(new GridLayout(4,1));
         eventSelectPanel.add(eventTimePanel);
@@ -141,9 +171,9 @@ public class CalendarGUI extends JFrame {
         eventSelectPanel.add(eventYearPanel);
         eventSelectPanel.add(eventSubmitBtn);
 
-
         eventPanel.setLayout(new BorderLayout(5,5));
         eventPanel.add(eventSelectPanel, BorderLayout.PAGE_START); // eventTimePanel, BorderLayout.PAGE_START );
+        eventPanel.add(new JScrollPane(eventList), BorderLayout.CENTER);
 
         add(taskPanel);
         add(new JScrollPane(calData));
